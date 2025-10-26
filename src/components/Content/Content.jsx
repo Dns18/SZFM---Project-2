@@ -2,6 +2,13 @@ import React from "react";
 
 export default function Content({ route }) {
   switch (route) {
+        case "homepage":
+      return (
+        <section>
+          <h1>Home Page</h1>
+          <p>Home Page</p>
+        </section>
+      );
     case "dashboard":
       return (
         <section>
