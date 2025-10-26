@@ -7,15 +7,26 @@ A Pomodoro technikát kombinálja egy beépített AI tutorral, így egyszerre tu
 
 ## 🚀 Funkciók
 
-- 🎯 **Pomodoro Timer** – fókusz és szünet ciklusok kezelése  
-- 🤖 **AI Tutor** – tanulási segéd, akitől bármit kérdezhetsz  
-- 📊 **Statisztikák** – fókuszidő nyomon követése  
-- 🌙 **Dark/Light mód** – kényelmes megjelenés  
-- 💻 **Web App** – böngészőből bárhonnan elérhető  
+- 🎯 **Pomodoro Timer** – fókusz és szünet ciklusok kezelése
+  - 25 perces fókusz és 5 perces szünet ciklusok
+  - Indítás, szüneteltetés és újraindítás
+  - Hangjelzés a szakaszok végén
+- 🤖 **AI Tutor** – tanulási segéd, akitől bármit kérdezhetsz
+  - Szöveges chat felület
+  - Kontextus alapú válaszok (tantárgy specifikusan bővíthető)
+- 📊 **Statisztikák** – fókuszidő nyomon követése
+  - Napi/heti/havi fókuszidő megjelenítése
+  - Diagramok és grafikonok
+- 🌙 **Dark/Light mód** – kényelmes megjelenés
+  - Manuális váltás, böngésző alapértelmezett téma felismerése
+  - Beállítások mentése a böngészőben
+- 💻 **Web App** – böngészőből bárhonnan elérhető
+  - Reszponzív design mobil, tablet és desktop nézetre
+  - Offline mód alap funkciókkal
 
 ---
 
 ## 🛠️ Technológiák
 
-- **Frontend:** React  
-- **Stílus:** CSS 
+- **Frontend:** React
+- **Stílus:** CSS
