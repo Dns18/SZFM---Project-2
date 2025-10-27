@@ -15,7 +15,7 @@ A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszköz
   - Böngésző (localStorage / IndexedDB) → alap statisztikák
   - Backend (adatbázis, pl. MongoDB vagy PostgreSQL) → bővített statisztikák, AI kontextus
 - **Külső szolgáltatások**
-  - OpenAI / saját AI modell API → AI Tutor válaszok
+  - OpenAI → AI Tutor válaszok
 
 ---
 
