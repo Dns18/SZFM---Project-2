@@ -35,4 +35,12 @@ A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszköz
 ### 📊 Statisztikák modul
 - Időnapló készítése minden befejezett Pomodoro után
 - Napi/heti/havi nézet
-- Grafikonok (pl. Recharts vagy Chart.js könyvtár)
+
+### 🌙 Dark/Light mód
+- React context alapú téma kezelés
+- CSS változók (color scheme)
+- Böngésző preferencia felismerése (`prefers-color-scheme`)
+
+### 💻 Web App keretrendszer
+- Reszponzív design (CSS Grid / Flexbox)
+- Offline mód (PWA – Progressive Web App)
