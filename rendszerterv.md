@@ -44,3 +44,7 @@ A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszköz
 ### 💻 Web App keretrendszer
 - Reszponzív design (CSS Grid / Flexbox)
 - Offline mód (PWA – Progressive Web App)
+
+## 4. Rendszerstruktúra
+
+<img width="1268" height="1080" alt="struct" src="https://github.com/user-attachments/assets/72678bbc-e7db-4442-8d78-3f3ac8e034e5" />
