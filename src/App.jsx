@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import Sidebar from "./components/Sidebar/Sidebar";
+import Navbar from "./components/Navbar/Navbar";
 import Content from "./components/Content/Content";
+import Timer from "./components/Timer/Timer";
 import "./App.css";
 
 export default function App() {
-  const [route, setRoute] = useState("home");
+  const [route, setRoute] = useState("homepage");
 
   return (
     <div className="app">
-      <Sidebar route={route} setRoute={setRoute} />
-      <main className="main">
-        <Content route={route} />
-      </main>
+      <Navbar route={route} setRoute={setRoute} />
+      <div className="main-layout">
+        <div className="ai-tutor-panel">{/* AI Tutor később ide jön */}</div>
+      <div className="timer-panel">
+        {route === "homepage" && <Timer />}
+      </div>
+</div>
+
     </div>
   );
 }

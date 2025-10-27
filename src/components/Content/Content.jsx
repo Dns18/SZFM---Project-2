@@ -5,8 +5,8 @@ export default function Content({ route }) {
         case "homepage":
       return (
         <section>
-          <h1>Home Page</h1>
-          <p>Home Page</p>
+          <h1></h1>
+          <p></p>
         </section>
       );
     case "dashboard":
