@@ -2,6 +2,13 @@ import React from "react";
 
 export default function Content({ route }) {
   switch (route) {
+        case "homepage":
+      return (
+        <section>
+          <h1>Home Page</h1>
+          <p>Home Page</p>
+        </section>
+      );
     case "dashboard":
       return (
         <section>
@@ -12,15 +19,15 @@ export default function Content({ route }) {
     case "courses":
       return (
         <section>
-          <h1>Rólunk</h1>
-          <p>Rólunk</p>
+          <h1>Courses</h1>
+          <p>Courses</p>
         </section>
       );
     case "analytics":
       return (
         <section>
-          <h1>Szolgáltatások</h1>
-          <p>Szolgáltatások</p>
+          <h1>Analytics</h1>
+          <p>Analytics</p>
         </section>
       );
     default:

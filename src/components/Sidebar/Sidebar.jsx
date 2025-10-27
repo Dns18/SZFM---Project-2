@@ -3,6 +3,7 @@ import "./Sidebar.css";
 
 export default function Sidebar({ route, setRoute }) {
   const links = [
+    { id: "homepage", label: "Home page" },
     { id: "dashboard", label: "Dashboard" },
     { id: "courses", label: "Courses" },
     { id: "analytics", label: "Analytics" },
