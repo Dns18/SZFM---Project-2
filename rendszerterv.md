@@ -5,3 +5,34 @@ A **FocusFlow** célja, hogy segítse a felhasználókat a hatékony tanulásban
 A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszközről elérhető.
 
 ---
+
+## 2. Rendszerarchitektúra
+
+**Felépítés:**
+- **Frontend (React + CSS)** – kliensoldali alkalmazás
+- **Backend (opcionális)** – AI integráció, statisztikák tárolása
+- **Adattárolás**
+  - Böngésző (localStorage / IndexedDB) → alap statisztikák
+  - Backend (adatbázis, pl. MongoDB vagy PostgreSQL) → bővített statisztikák, AI kontextus
+- **Külső szolgáltatások**
+  - OpenAI / saját AI modell API → AI Tutor válaszok
+
+---
+
+## 3. Fő komponensek
+
+### 🎯 Pomodoro Timer modul
+- Beállított időzítők (25/5 perc, később konfigurálható)
+- Indítás / szünet / reset funkció
+- Hangjelzés vagy értesítés a ciklus végén
+- Idő visszaszámlálás animációval
+
+### 🤖 AI Tutor modul
+- Chat UI (React komponens, hasonló Messenger/ChatGPT felülethez)
+- Kérdés-válasz logika → API hívás AI szolgáltatás felé
+- Tantárgy-specifikus kiegészítések (pl. matek, programozás modulok)
+
+### 📊 Statisztikák modul
+- Időnapló készítése minden befejezett Pomodoro után
+- Napi/heti/havi nézet
+- Grafikonok (pl. Recharts vagy Chart.js könyvtár)
