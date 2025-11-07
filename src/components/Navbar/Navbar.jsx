@@ -13,14 +13,14 @@ export default function Navbar({ route, setRoute }) {
     <header className="navbar">
       <div className="logo">FocusFlow</div>
       <nav className="nav-links">
-        {links.map((link) => (
-          <span
-            key={link.id}
-            className={`nav-item ${route === link.id ? "active" : ""}`}
-            onClick={() => setRoute(link.id)}
+        {links.map((l) => (
+          <button
+            key={l.id}
+            className={`nav-item ${route === l.id ? "active" : ""}`}
+            onClick={() => setRoute(l.id)}
           >
-            {link.label}
-          </span>
+            {l.label}
+          </button>
         ))}
       </nav>
     </header>

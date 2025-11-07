@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Chat.css";
 
 export default function Chat() {
@@ -6,36 +6,43 @@ export default function Chat() {
     { sender: "ai", text: "Szia! Miben segíthetek ma?" },
   ]);
   const [input, setInput] = useState("");
+  const boxRef = useRef(null);
 
   const handleSend = () => {
     if (input.trim() === "") return;
-
     setMessages((prev) => [...prev, { sender: "user", text: input }]);
     setInput("");
-
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
         { sender: "ai", text: "Érdekes! Nézzük meg együtt..." },
       ]);
-    }, 800);
+    }, 700);
   };
+
+  useEffect(() => {
+    if (boxRef.current) {
+      boxRef.current.scrollTop = boxRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div className="chat-wrapper">
-      <h2 className="chat-title">AI TUTOR</h2>
-      <div className="chat-box">
-        {messages.map((msg, i) => (
-          <div key={i} className={`chat-message ${msg.sender}`}>
-            {msg.text}
+      <h3 className="chat-title">AI TUTOR</h3>
+
+      <div className="chat-box" ref={boxRef}>
+        {messages.map((m, i) => (
+          <div key={i} className={`chat-message ${m.sender}`}>
+            {m.text}
           </div>
         ))}
       </div>
+
       <div className="chat-input-group">
         <input
-          type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Írj egy üzenetet..."
         />
         <button onClick={handleSend}>Küldés</button>

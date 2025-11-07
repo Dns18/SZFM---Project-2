@@ -5,15 +5,16 @@ export default function Content({ route }) {
         case "homepage":
       return (
         <section>
-          <h1></h1>
-          <p></p>
+          <h1>Home Page</h1>
+          <p>Home Page</p>
         </section>
       );
     case "dashboard":
       return (
         <section>
           <h1>Dashboard</h1>
-          <p>Dashboard</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel lorem ac sapien viverra mattis. Nulla facilisi. Donec at pharetra lacus. Curabitur tempus felis non massa luctus, sit amet tristique lorem fringilla. Integer elementum, eros ac facilisis hendrerit, justo ipsum porta odio, sed suscipit mauris dolor nec nulla. Suspendisse potenti. 
+</p>
         </section>
       );
     case "courses":

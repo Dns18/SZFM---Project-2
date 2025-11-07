@@ -5,7 +5,7 @@
   background: #0b1020; /* 🌙 Teljes oldal háttérszíne */
 }
 
-/* main layout: tartalom + timer */
+/* main layout: tartalom + timer (alapértelmezett: két oszlop) */
 .main-layout {
   display: grid;
   grid-template-columns: 1fr 1fr; /* két egyenlő oszlop */
@@ -15,6 +15,12 @@
   background: transparent; /* háttér ne fedje a sötétkéket */
 }
 
+/* Ha NEM homepage, ne legyen kétoszlopos layout (egy oszlopos, teljes szélességű content) */
+.main-layout:not(.homepage) {
+  display: block;
+  padding: 28px;
+}
+
 /* Tartalom panel */
 .content-panel {
   background: #111836; /* sötétebb kék doboz */
@@ -22,6 +28,14 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   color: white;
+}
+
+/* Ha main-layout nem homepage, a content-panel töltse ki a teljes szélességet és középre igazolt legyen */
+.main-layout:not(.homepage) .content-panel {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Timer panel */
@@ -35,6 +49,16 @@
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+/* Chat panel: biztosítjuk, hogy a chat a bal oldali oszlopot teljesen kitöltse */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 400px;
+  box-sizing: border-box;
+  background: transparent;
 }
 
 /* Reszponzív */

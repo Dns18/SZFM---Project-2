@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import Content from "./components/Content/Content";
 import Timer from "./components/Timer/Timer";
+import Chat from "./components/Chat/Chat";
 import "./App.css";
 
 export default function App() {
@@ -10,13 +11,23 @@ export default function App() {
   return (
     <div className="app">
       <Navbar route={route} setRoute={setRoute} />
-      <div className="main-layout">
-        <div className="ai-tutor-panel">{/* AI Tutor később ide jön */}</div>
-      <div className="timer-panel">
-        {route === "homepage" && <Timer />}
-      </div>
-</div>
 
+      <div className={`main-layout ${route === "homepage" ? "homepage" : ""}`}>
+        {route === "homepage" ? (
+          <>
+            <div className="chat-panel">
+              <Chat />
+            </div>
+            <div className="timer-panel">
+              <Timer />
+            </div>
+          </>
+        ) : (
+          <div className="content-panel">
+            <Content route={route} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
