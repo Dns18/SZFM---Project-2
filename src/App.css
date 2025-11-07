@@ -1,25 +1,81 @@
-.app{
-  display:flex;
-  min-height:100vh;
+.app { 
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #0b1020; /* 🌙 Teljes oldal háttérszíne */
 }
 
-/* main content to the right of the sidebar */
-.main{
-  flex:1;
-  padding:28px;
-  overflow:auto;
-  min-height:100vh;
-  background:linear-gradient(180deg, rgba(245,247,251,0.8), rgba(245,247,251,0.95));
+/* main layout: tartalom + timer (alapértelmezett: két oszlop) */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* két egyenlő oszlop */
+  gap: 24px;
+  padding: 28px;
+  flex: 1;
+  background: transparent; /* háttér ne fedje a sötétkéket */
 }
 
-/* simple container for content */
-.main section{
-  background:#fff;
-  padding:24px;
-  border-radius:8px;
-  box-shadow:0 2px 8px rgba(16,24,40,0.06);
-  max-width:1000px;
+/* Ha NEM homepage, ne legyen kétoszlopos layout (egy oszlopos, teljes szélességű content) */
+.main-layout:not(.homepage) {
+  display: block;
+  padding: 28px;
 }
-@media (max-width:720px){
-  .main{padding:16px;}
+
+/* Tartalom panel */
+.content-panel {
+  background: #111836; /* sötétebb kék doboz */
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+/* Ha main-layout nem homepage, a content-panel töltse ki a teljes szélességet és középre igazolt legyen */
+.main-layout:not(.homepage) .content-panel {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Timer panel */
+.timer-panel {
+  background: #111836; /* ugyanaz a sötét háttér mint a content panelnél */
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Chat panel: biztosítjuk, hogy a chat a bal oldali oszlopot teljesen kitöltse */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 400px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* Reszponzív */
+@media (max-width: 960px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .content-panel,
+  .timer-panel {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }

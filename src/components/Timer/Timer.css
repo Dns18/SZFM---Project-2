@@ -1,0 +1,104 @@
+.timer-wrapper {
+  background-color: #111836;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.focus-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.circle-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.progress-ring__background {
+  fill: none;
+  stroke: #1e293b;
+  stroke-width: 10;
+}
+
+.progress-ring__circle {
+  fill: none;
+  stroke: url(#gradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  stroke-dasharray: calc(2 * 3.1416 * 115);
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Színátmenet (kék → sárga) */
+.progress-ring {
+  position: relative;
+}
+.progress-ring defs linearGradient stop:first-child {
+  stop-color: #00e0ff;
+}
+.progress-ring defs linearGradient stop:last-child {
+  stop-color: #c8f560;
+}
+
+/* A kör belsejében az idő */
+.time-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+/* Gombok */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.start {
+  background-color: white;
+  color: black;
+}
+
+.pause {
+  background-color: #c8f560;
+  color: black;
+}
+
+.end {
+  background-color: #00e0ff;
+  color: black;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Alsó szöveg */
+.next-break {
+  color: #94a3b8;
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
+}
