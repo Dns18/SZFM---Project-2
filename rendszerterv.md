@@ -45,6 +45,19 @@ A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszköz
 - Reszponzív design (CSS Grid / Flexbox)
 - Offline mód (PWA – Progressive Web App)
 
-## 4. Rendszerstruktúra
+## 4. Fejlesztési és tesztelési terv
+
+- **Fejlesztés:** Scrum módszertan szerint, 2 hetes sprintekkel  
+- **Felhasználói tesztek:** UI és UX visszajelzések gyűjtése
+
+## 5. Jövőbeli bővítési lehetőségek
+
+- **Mobilalkalmazás verzió:** React Native alapokon  
+- **Több AI-modell integráció:** pl. Claude, Gemini  
+- **Tanulási célkitűzések követése:** Goal Tracker  
+- **Gamifikációs elemek:** jutalmak, ranglista
+
+
+## 6. Rendszerstruktúra
 
 <img width="1268" height="1080" alt="struct" src="https://github.com/user-attachments/assets/72678bbc-e7db-4442-8d78-3f3ac8e034e5" />
