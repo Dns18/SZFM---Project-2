@@ -132,7 +132,15 @@ A FocusFlow böngészőből elérhető, asztali és mobil nézetre is optimaliz�
 
 ---
 
-## 🧠 6. Jövőbeli bővítési lehetőségek
+## 🏗️ 6. Rendszerarchitektúra
+
+### 6.1 Felhasználói felület (Frontend – React)
+- Megjeleníti az időzítőt, a statisztikákat és az AI chatet.  
+- Kezeli a felhasználói interakciókat.  
+- Kommunikál a backenddel REST API-n keresztül.  
+- Tárolja a helyi adatokat (LocalStorage).
+
+## 🧠 7. Jövőbeli bővítési lehetőségek
 
 - Fiókrendszer és felhő alapú mentés  
 - Gamifikáció (jutalmak, rangok)  
