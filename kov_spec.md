@@ -97,3 +97,8 @@ A fejlesztés során a FocusFlow rendszer működését manuális és automata t
 - **Teljesítményteszt:** a betöltési idő és válaszidő mérése (cél: < 3 másodperc).  
 - **Adattárolás teszt:** ellenőrzés, hogy a statisztikák és beállítások helyesen mentődnek a LocalStorage-be.  
 - **AI választeszt:** az OpenAI integráció stabilitásának és válaszidejének ellenőrzése.
+
+### 8.2. Tesztelési környezet
+- Böngészők: **Chrome, Firefox, Edge**  
+- Eszközök: **asztali gép, laptop, telefon**  
+- Tesztadatok: különböző fókuszidők és felhasználói szokások szimulálása
