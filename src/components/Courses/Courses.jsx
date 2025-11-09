@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./Courses.css";
+ // igazítsd az útvonalat a projekted mappaszerkezetéhez
 
 const COURSES_KEY = "focusflow_courses_v1";
 const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -124,28 +126,8 @@ export default function Courses() {
     setCourses((prev) => prev.map((c) => (c.id === courseId ? { ...c, materials: c.materials.filter((m) => m.id !== materialId) } : c)));
   };
 
-  // button styles
-  const btnBase = { padding: "8px 12px", borderRadius: 8, border: "none", color: "white", cursor: "pointer" };
-  const btnPrimary = { ...btnBase, background: "#0b7df0" };
-  const btnDanger = { ...btnBase, background: "#7f1d1d" };
-  const smallBtnBase = { padding: "6px 8px", borderRadius: 6, border: "none", cursor: "pointer", color: "white" };
-
-  // layout styles
-  const cardStyle = {
-    background: "#0f1724",
-    padding: 12,
-    borderRadius: 10,
-    minHeight: 140,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    boxSizing: "border-box",
-    overflow: "hidden",
-  };
-  const materialsFormRow = { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" };
-  const inputFlexible = { padding: 6, borderRadius: 6, boxSizing: "border-box" };
-  const inputFull = { ...inputFlexible, flex: "1 1 160px", minWidth: 0, width: "100%" };
-  const urlInput = { ...inputFlexible, flex: "0 1 160px", minWidth: 0 };
+  // small inline styles kept for top-level inputs/buttons (optional)
+  const btnPrimary = { padding: "8px 12px", borderRadius: 8, border: "none", color: "white", cursor: "pointer", background: "#0b7df0" };
 
   return (
     <section style={{ padding: 20, color: "white" }}>
@@ -169,9 +151,9 @@ export default function Courses() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+      <div className="course-grid">
         {courses.map((c) => (
-          <div key={c.id} style={cardStyle}>
+          <div key={c.id} className="course-card">
             <div>
               <h3 style={{ margin: 0, wordBreak: "break-word" }}>{c.title}</h3>
               {c.description && <p style={{ margin: "6px 0 0", color: "#9ca3af", wordBreak: "break-word" }}>{c.description}</p>}
@@ -181,32 +163,21 @@ export default function Courses() {
               <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                 <button
                   onClick={() => setSelectedCourseId(selectedCourseId === c.id ? null : c.id)}
-                  style={{ ...smallBtnBase, background: "#111836" }}
+                  style={{ padding: "6px 8px", borderRadius: 6, border: "none", cursor: "pointer", color: "white", background: "#111836" }}
                 >
                   Tananyag
                 </button>
-                <button onClick={() => removeCourse(c.id)} style={{ ...smallBtnBase, ...btnDanger }}>
+                <button onClick={() => removeCourse(c.id)} style={{ padding: "6px 8px", borderRadius: 6, border: "none", cursor: "pointer", color: "white", background: "#7f1d1d" }}>
                   Töröl
                 </button>
               </div>
 
               {selectedCourseId === c.id && (
                 <div style={{ marginTop: 8 }}>
-                  <div style={materialsFormRow}>
-                    <input
-                      value={materialTitle}
-                      onChange={(e) => setMaterialTitle(e.target.value)}
-                      placeholder="Tananyag címe"
-                      style={inputFull}
-                    />
-                    <input
-                      value={materialUrl}
-                      onChange={(e) => setMaterialUrl(e.target.value)}
-                      placeholder="URL (opcionális)"
-                      style={urlInput}
-                    />
+                  <div className="materials-form-row">
+                    <input value={materialTitle} onChange={(e) => setMaterialTitle(e.target.value)} placeholder="Tananyag címe" className="input-full" />
+                    <input value={materialUrl} onChange={(e) => setMaterialUrl(e.target.value)} placeholder="URL (opcionális)" className="url-input" />
 
-                    {/* hidden file input triggered by button */}
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -214,53 +185,43 @@ export default function Courses() {
                       onChange={onFileChange}
                       style={{ position: "absolute", left: -9999, width: 1, height: 1, overflow: "hidden" }}
                     />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                      style={{ ...smallBtnBase, background: "#374151" }}
-                    >
+                    <button type="button" onClick={() => fileInputRef.current && fileInputRef.current.click()} className="small-btn">
                       {materialFile ? materialFile.name : "Feltöltés"}
                     </button>
 
-                    <button onClick={() => addMaterial(c.id)} style={{ ...smallBtnBase, background: "#0b7df0" }}>
+                    <button onClick={() => addMaterial(c.id)} className="small-btn primary">
                       Hozzáad
                     </button>
                   </div>
 
-                  <ul style={{ margin: "8px 0 0 16px", padding: 0 }}>
+                  <ul className="material-list">
                     {c.materials.length === 0 && <li style={{ color: "#9ca3af" }}>Nincs tananyag</li>}
                     {c.materials.map((m) => (
-                      <li
-                        key={m.id}
-                        style={{
-                          marginBottom: 6,
-                          display: "flex",
-                          justifyContent: "space-between",
-                          gap: 8,
-                          alignItems: "center",
-                        }}
-                      >
-                        <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>
-                          {m.file ? (
-                            <a href={m.file.data} download={m.file.name} style={{ color: "#60a5fa", textDecoration: "none" }}>
-                              {m.title}
-                            </a>
-                          ) : m.url ? (
-                            <a href={m.url} target="_blank" rel="noreferrer" style={{ color: "#60a5fa" }}>
-                              {m.title}
-                            </a>
-                          ) : (
-                            <span>{m.title}</span>
-                          )}
-                          {/* show file name next to title when file exists */}
+                      <li key={m.id} className="material-item">
+                        <div className="material-left">
+                          <div className="material-title-wrap">
+                            {m.url ? (
+                              <a href={m.url} target="_blank" rel="noreferrer" className="material-title link course-tooltip" data-course-title={c.title}>
+                                {m.title}
+                              </a>
+                            ) : (
+                              <span className="material-title course-tooltip" data-course-title={c.title}>
+                                {m.title}
+                              </span>
+                            )}
+
+                            {m.file && <span className="material-filename course-tooltip" data-course-title={c.title}>{`(${m.file.name})`}</span>}
+                          </div>
+
                           {m.file && (
-                            <span style={{ marginLeft: 8, color: "#9ca3af", fontSize: 12 }}>
-                              ({m.file.name})
-                            </span>
+                            <a className="file-download" href={m.file.data} download={m.file.name} title={`Letöltés: ${m.file.name}`}>
+                              ⇩
+                            </a>
                           )}
                         </div>
+
                         <div>
-                          <button onClick={() => removeMaterial(c.id, m.id)} style={{ ...smallBtnBase, ...btnDanger }}>
+                          <button onClick={() => removeMaterial(c.id, m.id)} className="small-btn danger">
                             Töröl
                           </button>
                         </div>
