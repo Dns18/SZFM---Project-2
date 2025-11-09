@@ -57,7 +57,11 @@ A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszköz
 - **Tanulási célkitűzések követése:** Goal Tracker  
 - **Gamifikációs elemek:** jutalmak, ranglista
 
-
 ## 6. Rendszerstruktúra
 
 <img width="1268" height="1080" alt="struct" src="https://github.com/user-attachments/assets/72678bbc-e7db-4442-8d78-3f3ac8e034e5" />
+
+## 7. Use-Case
+
+<img width="1536" height="1024" alt="UseCase" src="https://github.com/user-attachments/assets/1765c3b4-7147-4087-90cc-5826ebef4a36" />
+
