@@ -65,3 +65,13 @@ A rendszer egyszerűen használható webes alkalmazás, amely bármilyen eszköz
 
 <img width="1536" height="1024" alt="UseCase" src="https://github.com/user-attachments/assets/1765c3b4-7147-4087-90cc-5826ebef4a36" />
 
+A fenti Use-Case diagram a FocusFlow alkalmazás fő funkcióit és a felhasználó interakcióit szemlélteti.
+A rendszer egyetlen külső szereplője a Felhasználó, aki a webes felületen keresztül használja az alkalmazás szolgáltatásait.
+
+A fő használati esetek a következők:
+- **Pomodoro indítása / leállítása:** a felhasználó elindítja, szünetelteti vagy visszaállítja az időzítőt.
+- **AI Tutor kérdés küldése:** a felhasználó kérdéseket tesz fel az AI-nak, amely segíti a tanulást vagy munkaszervezést.
+- **Statisztika megtekintése:** a felhasználó hozzáfér a napi/heti fókuszidő statisztikákhoz.
+- **Téma váltás:** a felhasználó átválthat világos és sötét megjelenési mód között.
+
+A diagram célja, hogy áttekinthetően bemutassa, milyen műveleteket hajthat végre a felhasználó a rendszerrel, és hogyan kapcsolódnak ezek az egyes funkcionális egységekhez.
