@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import Courses from "../Courses/Courses";
 
 const STORAGE_KEY = "focusflow_sessions_v1";
 const DEFAULT_SESSION_DURATION = 25 * 60; // másodpercben (ha nincs duration a mentésben)
@@ -24,7 +25,7 @@ export default function Content({ route }) {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  // Aggregálás: darabszám és összes másodperc tantárgyanként
+  // darabszám és összes másodperc tantárgyanként
   const stats = useMemo(() => {
     const map = {};
     sessions.forEach((s) => {
@@ -44,7 +45,7 @@ export default function Content({ route }) {
   if (route === "dashboard") {
     return (
       <section style={{ padding: 24, color: "white" }}>
-        <h1>Dashboard</h1>
+        <h1>Statisztikák</h1>
 
         {sessions.length === 0 ? (
           <p>Nincs még mentett session.</p>
@@ -139,12 +140,7 @@ export default function Content({ route }) {
         </section>
       );
     case "courses":
-      return (
-        <section>
-          <h1>Courses</h1>
-          <p>Courses</p>
-        </section>
-      );
+      return <Courses />;
     case "analytics":
       return (
         <section>

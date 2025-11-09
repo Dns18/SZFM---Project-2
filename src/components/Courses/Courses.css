@@ -1,0 +1,2 @@
+.course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.course-card { background: #0f1724; padding: 12px; border-radius: 10px; }

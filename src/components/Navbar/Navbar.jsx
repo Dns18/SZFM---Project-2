@@ -3,10 +3,10 @@ import "./Navbar.css";
 
 export default function Navbar({ route, setRoute }) {
   const links = [
-    { id: "homepage", label: "Home" },
-    { id: "dashboard", label: "Dashboard" },
-    { id: "courses", label: "Courses" },
-    { id: "analytics", label: "Analytics" },
+    { id: "homepage", label: "Kezdőlap" },
+    { id: "dashboard", label: "Statisztikák" },
+    { id: "courses", label: "Tanfolyamok" },
+    { id: "analytics", label: "Elemzések" },
   ];
 
   return (
