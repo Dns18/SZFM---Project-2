@@ -143,6 +143,10 @@ A FocusFlow böngészőből elérhető, asztali és mobil nézetre is optimaliz�
 ### 6.2 Backend (Node.js / Flask)
 - API endpointok a statisztikákhoz, felhasználói adatokhoz.
 - AI modul integráció (OpenAI API hívások kezelése).
+
+### 6.3 Adatkezelés
+- Lokálisan (LocalStorage) vagy felhőben (Firebase).
+- Mentett adatok: fókuszidők, beállítások, célkitűzések.
   
 ---
 
