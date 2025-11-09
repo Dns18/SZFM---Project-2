@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const COURSES_KEY = "focusflow_courses_v1";
+const MAX_FILE_BYTES = 5 * 1024 * 1024; // 5MB
 
 function loadCourses() {
   try {
@@ -24,6 +25,9 @@ export default function Courses() {
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [materialTitle, setMaterialTitle] = useState("");
   const [materialUrl, setMaterialUrl] = useState("");
+  const [materialFile, setMaterialFile] = useState(null);
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     saveCourses(courses);
@@ -44,13 +48,76 @@ export default function Courses() {
     if (selectedCourseId === id) setSelectedCourseId(null);
   };
 
-  const addMaterial = (courseId) => {
+  const onFileChange = (e) => {
+    const f = e.target.files?.[0] ?? null;
+    if (!f) {
+      setMaterialFile(null);
+      return;
+    }
+    if (f.size > MAX_FILE_BYTES) {
+      alert("A fájl túl nagy. Maximum 5 MB engedélyezett.");
+      e.target.value = "";
+      setMaterialFile(null);
+      return;
+    }
+    const allowed = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowed.includes(f.type)) {
+      alert("Csak PDF és Word (.doc, .docx) fájlok engedélyezettek.");
+      e.target.value = "";
+      setMaterialFile(null);
+      return;
+    }
+    setMaterialFile(f);
+  };
+
+  const readFileAsDataUrl = (file) =>
+    new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+
+  const addMaterial = async (courseId) => {
     const mt = materialTitle.trim();
-    if (!mt) return;
-    const material = { id: uid(), title: mt, url: materialUrl.trim(), createdAt: Date.now() };
+    if (!mt && !materialFile && materialUrl.trim() === "") {
+      alert("Adj meg címet, linket vagy tölts fel egy fájlt.");
+      return;
+    }
+
+    let fileObj = null;
+    if (materialFile) {
+      try {
+        const data = await readFileAsDataUrl(materialFile); // data:<mime>;base64,...
+        fileObj = {
+          name: materialFile.name,
+          type: materialFile.type,
+          size: materialFile.size,
+          data,
+        };
+      } catch (e) {
+        alert("A fájl beolvasása sikertelen.");
+        return;
+      }
+    }
+
+    const material = {
+      id: uid(),
+      title: mt || (fileObj ? fileObj.name : "Tananyag"),
+      url: materialUrl.trim() || null,
+      file: fileObj,
+      createdAt: Date.now(),
+    };
+
     setCourses((prev) => prev.map((c) => (c.id === courseId ? { ...c, materials: [...c.materials, material] } : c)));
     setMaterialTitle("");
     setMaterialUrl("");
+    setMaterialFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removeMaterial = (courseId, materialId) => {
@@ -58,19 +125,12 @@ export default function Courses() {
   };
 
   // button styles
-  const btnBase = {
-    padding: "8px 12px",
-    borderRadius: 8,
-    border: "none",
-    color: "white",
-    cursor: "pointer",
-  };
-
+  const btnBase = { padding: "8px 12px", borderRadius: 8, border: "none", color: "white", cursor: "pointer" };
   const btnPrimary = { ...btnBase, background: "#0b7df0" };
   const btnDanger = { ...btnBase, background: "#7f1d1d" };
   const smallBtnBase = { padding: "6px 8px", borderRadius: 6, border: "none", cursor: "pointer", color: "white" };
 
-  // card/input layout styles to prevent overflow
+  // layout styles
   const cardStyle = {
     background: "#0f1724",
     padding: 12,
@@ -82,29 +142,10 @@ export default function Courses() {
     boxSizing: "border-box",
     overflow: "hidden",
   };
-  const materialsFormRow = {
-    display: "flex",
-    gap: 8,
-    alignItems: "center",
-    flexWrap: "wrap",
-  };
-  const inputFlexible = {
-    padding: 6,
-    borderRadius: 6,
-    boxSizing: "border-box",
-  };
-  const inputFull = {
-    ...inputFlexible,
-    flex: "1 1 160px",
-    minWidth: 0, // fontos, hogy ne lógjon ki flexben
-    width: "100%",
-  };
-  const urlInput = {
-    ...inputFlexible,
-    flex: "0 1 160px",
-    minWidth: 0,
-  };
-  const addBtnSmall = { ...smallBtnBase, background: "#0b7df0" };
+  const materialsFormRow = { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" };
+  const inputFlexible = { padding: 6, borderRadius: 6, boxSizing: "border-box" };
+  const inputFull = { ...inputFlexible, flex: "1 1 160px", minWidth: 0, width: "100%" };
+  const urlInput = { ...inputFlexible, flex: "0 1 160px", minWidth: 0 };
 
   return (
     <section style={{ padding: 20, color: "white" }}>
@@ -164,7 +205,24 @@ export default function Courses() {
                       placeholder="URL (opcionális)"
                       style={urlInput}
                     />
-                    <button onClick={() => addMaterial(c.id)} style={addBtnSmall}>
+
+                    {/* hidden file input triggered by button */}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={onFileChange}
+                      style={{ position: "absolute", left: -9999, width: 1, height: 1, overflow: "hidden" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                      style={{ ...smallBtnBase, background: "#374151" }}
+                    >
+                      {materialFile ? materialFile.name : "Feltöltés"}
+                    </button>
+
+                    <button onClick={() => addMaterial(c.id)} style={{ ...smallBtnBase, background: "#0b7df0" }}>
                       Hozzáad
                     </button>
                   </div>
@@ -172,14 +230,33 @@ export default function Courses() {
                   <ul style={{ margin: "8px 0 0 16px", padding: 0 }}>
                     {c.materials.length === 0 && <li style={{ color: "#9ca3af" }}>Nincs tananyag</li>}
                     {c.materials.map((m) => (
-                      <li key={m.id} style={{ marginBottom: 6, display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
+                      <li
+                        key={m.id}
+                        style={{
+                          marginBottom: 6,
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: 8,
+                          alignItems: "center",
+                        }}
+                      >
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "70%" }}>
-                          {m.url ? (
-                            <a href={m.url} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", textDecoration: "none" }}>
+                          {m.file ? (
+                            <a href={m.file.data} download={m.file.name} style={{ color: "#60a5fa", textDecoration: "none" }}>
+                              {m.title}
+                            </a>
+                          ) : m.url ? (
+                            <a href={m.url} target="_blank" rel="noreferrer" style={{ color: "#60a5fa" }}>
                               {m.title}
                             </a>
                           ) : (
                             <span>{m.title}</span>
+                          )}
+                          {/* show file name next to title when file exists */}
+                          {m.file && (
+                            <span style={{ marginLeft: 8, color: "#9ca3af", fontSize: 12 }}>
+                              ({m.file.name})
+                            </span>
                           )}
                         </div>
                         <div>
