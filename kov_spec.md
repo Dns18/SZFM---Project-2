@@ -83,4 +83,17 @@ Az alkalmazás nem tárol bizalmas adatokat, csak felhasználói statisztikákat
 - Az AI tutor válaszol a beírt kérdésekre  
 - A statisztikák pontosan frissülnek  
 - A dark/light mód azonnal alkalmazza a stílust  
-- Az adatok megmaradnak az oldal újratöltése után  
+- Az adatok megmaradnak az oldal újratöltése után
+
+---
+
+## 8. Tesztelési és minőségbiztosítási terv
+
+A fejlesztés során a FocusFlow rendszer működését manuális és automata tesztekkel ellenőrizzük, hogy a funkciók megfeleljenek a követelményeknek.
+
+### 8.1. Tesztelési típusok
+- **Funkcionális tesztelés:** minden fő funkció (Pomodoro, AI chat, statisztikák, beállítások) helyes működésének ellenőrzése.  
+- **Felhasználói felület tesztelés:** a gombok, menük és témaváltás helyes megjelenésének vizsgálata különböző böngészőkben.  
+- **Teljesítményteszt:** a betöltési idő és válaszidő mérése (cél: < 3 másodperc).  
+- **Adattárolás teszt:** ellenőrzés, hogy a statisztikák és beállítások helyesen mentődnek a LocalStorage-be.  
+- **AI választeszt:** az OpenAI integráció stabilitásának és válaszidejének ellenőrzése.
