@@ -1,9 +1,9 @@
-// src/components/Timer/Timer.jsx
 import { useState, useEffect, useRef } from "react";
 import "./Timer.css";
 
-const FOCUS_DURATION = 10; // 25 perc
-const BREAK_DURATION = 5 ; // 5 perc
+const FOCUS_DURATION = 25 * 60; // 25 perc
+const SHORT_BREAK_DURATION = 5 * 60; // 5 perc
+const LONG_BREAK_DURATION = 15 * 60; // 15 perc
 const STORAGE_KEY = "focusflow_sessions_v1";
 const TOPICS_KEY = "focusflow_topics_v1";
 
@@ -41,6 +41,7 @@ export default function Timer() {
   const [time, setTime] = useState(FOCUS_DURATION);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
+  const [cycleCount, setCycleCount] = useState(0); // 0 means before first focus, increments after each focus completes (1..4)
 
   const [topics, setTopics] = useState(() => loadTopics());
   const [topic, setTopic] = useState(() => {
@@ -89,11 +90,11 @@ export default function Timer() {
   };
 
   const startTimer = () => {
-    if (!isActive) {
-      setIsActive(true);
-      if (!isBreak && !sessionStartRef.current) sessionStartRef.current = Date.now();
-      startInterval();
-    }
+    // If we are after finishing a full 4-cycle + long break, user must manually start a new cycle:
+    // allow start if not active and (either in progress or at beginning)
+    setIsActive(true);
+    if (!isBreak && !sessionStartRef.current) sessionStartRef.current = Date.now();
+    startInterval();
   };
 
   const pauseTimer = () => {
@@ -102,15 +103,17 @@ export default function Timer() {
   };
 
   const endTimer = () => {
+    // Save current focus session if ending while in focus
     if (!isBreak && sessionStartRef.current) {
       const elapsedSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
       saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : FOCUS_DURATION);
+      sessionStartRef.current = null;
     }
     clearInterval(intervalRef.current);
     setIsActive(false);
     setIsBreak(false);
+    setCycleCount(0);
     setTime(FOCUS_DURATION);
-    sessionStartRef.current = null;
   };
 
   // utolsó 5 mp csipogás
@@ -121,34 +124,65 @@ export default function Timer() {
     }
   }, [time, isBreak]);
 
-  // váltás logika + mentés duration mezővel
+  // váltás logika
   useEffect(() => {
-    if (time === 0) {
-      playSound({ freq: isBreak ? 660 : 880, duration: 0.18, type: "sine", volume: 0.22 });
+    if (time !== 0) return;
 
-      clearInterval(intervalRef.current);
-      const wasBreak = isBreak;
-      const nextIsBreak = !wasBreak;
+    playSound({ freq: isBreak ? 660 : 880, duration: 0.18, type: "sine", volume: 0.22 });
 
-      if (!wasBreak && sessionStartRef.current) {
+    clearInterval(intervalRef.current);
+
+    // If finishing a focus period -> increment cycleCount and choose break
+    if (!isBreak) {
+      // save focus session
+      if (sessionStartRef.current) {
         const elapsedSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
         saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : FOCUS_DURATION);
         sessionStartRef.current = null;
       }
 
-      setIsBreak(nextIsBreak);
-      const nextDuration = nextIsBreak ? BREAK_DURATION : FOCUS_DURATION;
-      setTime(nextDuration);
+      const nextCycle = cycleCount + 1;
+      setCycleCount(nextCycle);
 
-      if (!nextIsBreak) {
-        sessionStartRef.current = Date.now();
+      if (nextCycle >= 4) {
+        // after the 4th focus, go to LONG_BREAK and then stop after it finishes
+        setIsBreak(true);
+        setTime(LONG_BREAK_DURATION);
+        setIsActive(true);
+        startInterval();
+        // we intentionally do NOT reset cycleCount here; after long break ends we'll stop
+        return;
+      } else {
+        // go to short break
+        setIsBreak(true);
+        setTime(SHORT_BREAK_DURATION);
+        setIsActive(true);
+        startInterval();
+        return;
       }
-
-      setIsActive(true);
-      startInterval();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [time, isBreak, topic]);
+
+if (isBreak) {
+  if (cycleCount >= 4) {
+    // hosszú szünet véget ért -> leállunk, kézi indítás kell
+    setIsBreak(false);
+    setIsActive(false);
+    setTime(FOCUS_DURATION);
+    setCycleCount(0);
+    return;
+  } else {
+    // rövid szünet véget ért -> folytatjuk a következő fókuszszakasszal
+    setIsBreak(false);
+    setTime(FOCUS_DURATION);
+    sessionStartRef.current = Date.now();
+    setIsActive(true);
+    startInterval();
+    return;
+  }
+}
+
+
+  }, [time]);
 
   useEffect(() => {
     return () => {
@@ -159,7 +193,7 @@ export default function Timer() {
     };
   }, []);
 
-  const totalForPercentage = isBreak ? BREAK_DURATION : FOCUS_DURATION;
+  const totalForPercentage = isBreak ? (cycleCount >= 4 && isBreak ? LONG_BREAK_DURATION : SHORT_BREAK_DURATION) : FOCUS_DURATION;
   const percentage = (time / totalForPercentage) * 100;
 
   // --- topic kezelő funkciók ---
@@ -189,7 +223,7 @@ export default function Timer() {
 
   return (
     <div className="timer-wrapper">
-      <h2 className="focus-title">{isBreak ? "BREAK" : "FOCUS SESSIONS"}</h2>
+      <h2 className="focus-title">{isBreak ? (cycleCount >= 4 ? "HOSSZÚ SZÜNET" : "SZÜNET") : "FOCUS SESSIONS"}</h2>
 
       <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
         <label style={{ color: "#cbd5e1", fontSize: 14 }}>Mit szeretnél tanulni?</label>
@@ -265,7 +299,13 @@ export default function Timer() {
         </button>
       </div>
 
-      <p className="next-break">{isBreak ? `A szünetből vissza: ${formatTime(time)}` : `Következő szünet: 5:00`}</p>
+      <p className="next-break">
+        {isBreak
+          ? cycleCount >= 4
+            ? `Hosszú szünet: ${formatTime(time)} — a ciklus a végére ért, indítsd újra kézzel.`
+            : `A szünetből vissza: ${formatTime(time)}`
+          : `Ciklus: ${cycleCount}/4 — Következő szünet: 05:00`}
+      </p>
     </div>
   );
 }
