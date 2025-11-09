@@ -140,6 +140,12 @@ A FocusFlow böngészőből elérhető, asztali és mobil nézetre is optimaliz�
 - Kommunikál a backenddel REST API-n keresztül.  
 - Tárolja a helyi adatokat (LocalStorage).
 
+### 6.2 Backend (Node.js / Flask)
+- API endpointok a statisztikákhoz, felhasználói adatokhoz.
+- AI modul integráció (OpenAI API hívások kezelése).
+  
+---
+
 ## 🧠 7. Jövőbeli bővítési lehetőségek
 
 - Fiókrendszer és felhő alapú mentés  
