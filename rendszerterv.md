@@ -75,3 +75,40 @@ A fő használati esetek a következők:
 - **Téma váltás:** a felhasználó átválthat világos és sötét megjelenési mód között.
 
 A diagram célja, hogy áttekinthetően bemutassa, milyen műveleteket hajthat végre a felhasználó a rendszerrel, és hogyan kapcsolódnak ezek az egyes funkcionális egységekhez.
+
+
+---
+
+## 8. Rendszer komponensdiagramja:
+Az alábbi komponensdiagram szemlélteti a FocusFlow alkalmazás fő React-komponenseinek kapcsolatát és a böngészőben tárolt adatok áramlását.
+- **App.jsx** → az alkalmazás központi komponense, ami a `route` állapot alapján váltja az alkomponenseket.  
+- **Navbar.jsx** → kapja a route-ot és a setRoute függvényt, így a navigáció kezelése itt történik.  
+- **Timer.jsx** és **Chat.jsx** → a főoldalhoz (`homepage`) tartozó komponensek.  
+- **Content.jsx** → a többi oldal tartalmát jeleníti meg.  
+- **Courses.jsx** → a tanfolyamokat kezeli a `Content`-en belül.  
+- **LocalStorage** → központi adattároló (mentett pomodoro sessionök, tanfolyamadatok).
+
+```mermaid
+graph TD
+    subgraph "FocusFlow Alkalmazás"
+        %% Fő komponens, kezeli a 'route' állapotot
+        App[<b>App.jsx</b><br><i>state: route</i>]
+        
+        %% App által közvetlenül renderelt komponensek
+        App --> Navbar[<b>Navbar.jsx</b><br><i>props: route, setRoute</i>]
+        App -- "ha route == 'homepage'" --> Timer[<b>Timer.jsx</b><br><i>state: time, topic, ...</i>]
+        App -- "ha route == 'homepage'" --> Chat[<b>Chat.jsx</b><br><i>state: messages, ...</i>]
+        App -- "ha route != 'homepage'" --> Content[<b>Content.jsx</b><br><i>props: route<br>state: sessions</i>]
+        
+        %% Content által renderelt komponens
+        Content -- "ha route == 'courses'" --> Courses[<b>Courses.jsx</b><br><i>state: courses, ...</i>]
+    end
+
+    subgraph "Böngésző Adattároló"
+        LS[(<b>LocalStorage</b><br>Böngésző API)]
+    end
+
+    %% Adatkapcsolatok a LocalStorage-hoz
+    Timer -. "<i>írja</i> (sessions, topics)" .-> LS
+    Content -. "<i>olvassa</i> (sessions)" .-> LS
+    Courses -. "<i>írja/olvassa</i> (courses)" .-> LS
