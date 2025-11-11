@@ -1,26 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import "./Timer.css";
 
-/*
-const FOCUS_DURATION = 25 * 60; // 25 perc
-const SHORT_BREAK_DURATION = 5 * 60; // 5 perc
-const LONG_BREAK_DURATION = 15 * 60; // 15 perc
-*/
-setTime(focusDuration);       // start focus session
-setTime(shortBreakDuration);  // start short break
-setTime(longBreakDuration);   // start long break
 const STORAGE_KEY = "focusflow_sessions_v1";
 const TOPICS_KEY = "focusflow_topics_v1";
 
-const [focusDuration, setFocusDuration] = useState(() => {
-  return parseInt(localStorage.getItem("focusDuration")) || 25 * 60;
-});
-const [shortBreakDuration, setShortBreakDuration] = useState(() => {
-  return parseInt(localStorage.getItem("shortBreakDuration")) || 5 * 60;
-});
-const [longBreakDuration, setLongBreakDuration] = useState(() => {
-  return parseInt(localStorage.getItem("longBreakDuration")) || 15 * 60;
-});
+const DEFAULT_FOCUS = 25 * 60;
+const DEFAULT_SHORT_BREAK = 5 * 60;
+const DEFAULT_LONG_BREAK = 15 * 60;
 
 function saveSessionToStorage(topic, durationSeconds) {
   if (!topic) return;
@@ -53,7 +39,20 @@ function saveTopics(topics) {
 }
 
 export default function Timer() {
-  const [time, setTime] = useState(FOCUS_DURATION);
+  const [focusDuration, setFocusDuration] = useState(() => {
+    const stored = parseInt(localStorage.getItem("focusDuration"));
+    return !isNaN(stored) ? stored : DEFAULT_FOCUS;
+  });
+  const [shortBreakDuration, setShortBreakDuration] = useState(() => {
+    const stored = parseInt(localStorage.getItem("shortBreak"));
+    return !isNaN(stored) ? stored : DEFAULT_SHORT_BREAK;
+  });
+  const [longBreakDuration, setLongBreakDuration] = useState(() => {
+    const stored = parseInt(localStorage.getItem("longBreak"));
+    return !isNaN(stored) ? stored : DEFAULT_LONG_BREAK;
+  });
+
+  const [time, setTime] = useState(focusDuration);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const [cycleCount, setCycleCount] = useState(0); // 0 means before first focus, increments after each focus completes (1..4)
@@ -121,14 +120,14 @@ export default function Timer() {
     // Save current focus session if ending while in focus
     if (!isBreak && sessionStartRef.current) {
       const elapsedSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
-      saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : FOCUS_DURATION);
+      saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : focusDuration);
       sessionStartRef.current = null;
     }
     clearInterval(intervalRef.current);
     setIsActive(false);
     setIsBreak(false);
     setCycleCount(0);
-    setTime(FOCUS_DURATION);
+    setTime(focusDuration);
   };
 
   useEffect(() => {
@@ -156,7 +155,7 @@ export default function Timer() {
       // save focus session
       if (sessionStartRef.current) {
         const elapsedSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
-        saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : FOCUS_DURATION);
+        saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : focusDuration);
         sessionStartRef.current = null;
       }
 
@@ -166,7 +165,7 @@ export default function Timer() {
       if (nextCycle >= 4) {
         // after the 4th focus, go to LONG_BREAK and then stop after it finishes
         setIsBreak(true);
-        setTime(LONG_BREAK_DURATION);
+        setTime(longBreakDuration);
         setIsActive(true);
         startInterval();
         // we intentionally do NOT reset cycleCount here; after long break ends we'll stop
@@ -174,7 +173,7 @@ export default function Timer() {
       } else {
         // go to short break
         setIsBreak(true);
-        setTime(SHORT_BREAK_DURATION);
+        setTime(shortBreakDuration);
         setIsActive(true);
         startInterval();
         return;
@@ -186,13 +185,13 @@ if (isBreak) {
     // hosszú szünet véget ért -> leállunk, kézi indítás kell
     setIsBreak(false);
     setIsActive(false);
-    setTime(FOCUS_DURATION);
+    setTime(focusDuration);
     setCycleCount(0);
     return;
   } else {
     // rövid szünet véget ért -> folytatjuk a következő fókuszszakasszal
     setIsBreak(false);
-    setTime(FOCUS_DURATION);
+    setTime(focusDuration);
     sessionStartRef.current = Date.now();
     setIsActive(true);
     startInterval();
@@ -212,7 +211,7 @@ if (isBreak) {
     };
   }, []);
 
-  const totalForPercentage = isBreak ? (cycleCount >= 4 && isBreak ? LONG_BREAK_DURATION : SHORT_BREAK_DURATION) : FOCUS_DURATION;
+  const totalForPercentage = isBreak ? (cycleCount >= 4 && isBreak ? longBreakDuration : shortBreakDuration) : focusDuration;
   const percentage = (time / totalForPercentage) * 100;
 
   // --- topic kezelő funkciók ---
