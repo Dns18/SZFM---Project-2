@@ -102,3 +102,33 @@
   margin-top: 1.2rem;
   font-size: 1.1rem;
 }
+
+.timer-settings {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.timer-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timer-setting label {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.timer-setting input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: #0b1220;
+  color: white;
+  width: 80px;
+  text-align: center;
+  font-size: 14px;
+}
