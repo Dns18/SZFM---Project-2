@@ -1,6 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import "./Timer.css";
 
+/*
+const FOCUS_DURATION = 25 * 60; // 25 perc
+const SHORT_BREAK_DURATION = 5 * 60; // 5 perc
+const LONG_BREAK_DURATION = 15 * 60; // 15 perc
+*/
+setTime(focusDuration);       // start focus session
+setTime(shortBreakDuration);  // start short break
+setTime(longBreakDuration);   // start long break
+const STORAGE_KEY = "focusflow_sessions_v1";
+const TOPICS_KEY = "focusflow_topics_v1";
+
 const [focusDuration, setFocusDuration] = useState(() => {
   return parseInt(localStorage.getItem("focusDuration")) || 25 * 60;
 });
@@ -10,12 +21,6 @@ const [shortBreakDuration, setShortBreakDuration] = useState(() => {
 const [longBreakDuration, setLongBreakDuration] = useState(() => {
   return parseInt(localStorage.getItem("longBreakDuration")) || 15 * 60;
 });
-
-const FOCUS_DURATION = 25 * 60; // 25 perc
-const SHORT_BREAK_DURATION = 5 * 60; // 5 perc
-const LONG_BREAK_DURATION = 15 * 60; // 15 perc
-const STORAGE_KEY = "focusflow_sessions_v1";
-const TOPICS_KEY = "focusflow_topics_v1";
 
 function saveSessionToStorage(topic, durationSeconds) {
   if (!topic) return;
@@ -125,6 +130,10 @@ export default function Timer() {
     setCycleCount(0);
     setTime(FOCUS_DURATION);
   };
+
+  useEffect(() => {
+    if (!isActive) setTime(focusDuration);
+  }, [focusDuration]);
 
   // utolsó 5 mp csipogás
   useEffect(() => {
@@ -274,8 +283,8 @@ if (isBreak) {
         </button>
       </div>
 
-      // ------------------------------------------------
-      // Egyéni időtartamok beállítása
+      // --- egyedi időtartamok beállítása ---
+
       <div className="custom-timers" style={{ marginBottom: 16 }}>
         <label style={{ marginRight: 12 }}>
           Fókusz perc:
@@ -329,8 +338,6 @@ if (isBreak) {
           Mentés
         </button>
       </div>
-
-      //--------------------------------------------------------
 
       <div className="circle-wrapper">
         <svg className="progress-ring" width="260" height="260">
