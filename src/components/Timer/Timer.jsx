@@ -282,8 +282,6 @@ if (isBreak) {
         </button>
       </div>
 
-      // --- egyedi időtartamok beállítása ---
-
       <div className="timer-settings">
         <div className="timer-setting">
           <label>Focus (perc):</label>
@@ -308,12 +306,15 @@ if (isBreak) {
             type="number"
             min="1"
             value={shortBreakDuration / 60}
+            // Short Break input
             onChange={(e) => {
               const minutes = parseInt(e.target.value);
               if (!isNaN(minutes) && minutes > 0) {
-                setShortBreak(minutes * 60);
-                if (isBreak && cycleCount < 4) setTime(minutes * 60);
-                localStorage.setItem("shortBreak", minutes * 60);
+                setShortBreakDuration(minutes * 60);
+                localStorage.setItem("shortBreakDuration", minutes * 60);
+                if (isBreak && cycleCount < 4) {
+                  setTime(minutes * 60); // az aktuális rövid szünetet frissíti
+                }
               }
             }}
           />
@@ -325,6 +326,7 @@ if (isBreak) {
             type="number"
             min="1"
             value={longBreakDuration / 60}
+            // Long Break Input
             onChange={(e) => {
               const minutes = parseInt(e.target.value);
               if (!isNaN(minutes) && minutes > 0) {
