@@ -52,6 +52,13 @@ export default function Timer() {
     return !isNaN(stored) ? stored : DEFAULT_LONG_BREAK;
   });
 
+  // segédfüggvény az idő formázására a Ciklushoz
+  const formatMinutesSeconds = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
   const [time, setTime] = useState(focusDuration);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
@@ -330,9 +337,11 @@ if (isBreak) {
             onChange={(e) => {
               const minutes = parseInt(e.target.value);
               if (!isNaN(minutes) && minutes > 0) {
-                setLongBreak(minutes * 60);
-                if (isBreak && cycleCount >= 4) setTime(minutes * 60);
-                localStorage.setItem("longBreak", minutes * 60);
+                setLongBreakDuration(minutes * 60);
+                localStorage.setItem("longBreakDuration", minutes * 60);
+                if (isBreak && cycleCount >= 4) {
+                  setTime(minutes * 60); // az aktuális hosszú szünetet frissíti
+                }
               }
             }}
           />
@@ -379,7 +388,9 @@ if (isBreak) {
           ? cycleCount >= 4
             ? `Hosszú szünet: ${formatTime(time)} — a ciklus a végére ért, indítsd újra kézzel.`
             : `A szünetből vissza: ${formatTime(time)}`
-          : `Ciklus: ${cycleCount}/4 — Következő szünet: 05:00`}
+          : `Ciklus: ${cycleCount}/4 — Következő szünet: ${formatMinutesSeconds(
+              cycleCount + 1 >= 4 ? longBreakDuration : shortBreakDuration
+            )}`}
       </p>
     </div>
   );
