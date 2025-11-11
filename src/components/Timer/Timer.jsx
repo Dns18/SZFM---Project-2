@@ -284,58 +284,57 @@ if (isBreak) {
 
       // --- egyedi időtartamok beállítása ---
 
-      <div className="custom-timers" style={{ marginBottom: 16 }}>
-        <label style={{ marginRight: 12 }}>
-          Fókusz perc:
+      <div className="timer-settings">
+        <div className="timer-setting">
+          <label>Focus (perc):</label>
           <input
             type="number"
-            min={1}
+            min="1"
             value={focusDuration / 60}
-            onChange={(e) => setFocusDuration(Number(e.target.value) * 60)}
-            style={{ marginLeft: 4, width: 60 }}
+            onChange={(e) => {
+              const minutes = parseInt(e.target.value);
+              if (!isNaN(minutes) && minutes > 0) {
+                setFocusDuration(minutes * 60);
+                setTime(minutes * 60);
+                localStorage.setItem("focusDuration", minutes * 60);
+              }
+            }}
           />
-        </label>
+        </div>
 
-        <label style={{ marginRight: 12 }}>
-          Rövid szünet perc:
+        <div className="timer-setting">
+          <label>Short Break (perc):</label>
           <input
             type="number"
-            min={1}
+            min="1"
             value={shortBreakDuration / 60}
-            onChange={(e) => setShortBreakDuration(Number(e.target.value) * 60)}
-            style={{ marginLeft: 4, width: 60 }}
+            onChange={(e) => {
+              const minutes = parseInt(e.target.value);
+              if (!isNaN(minutes) && minutes > 0) {
+                setShortBreak(minutes * 60);
+                if (isBreak && cycleCount < 4) setTime(minutes * 60);
+                localStorage.setItem("shortBreak", minutes * 60);
+              }
+            }}
           />
-        </label>
+        </div>
 
-        <label style={{ marginRight: 12 }}>
-          Hosszú szünet perc:
+        <div className="timer-setting">
+          <label>Long Break (perc):</label>
           <input
             type="number"
-            min={1}
+            min="1"
             value={longBreakDuration / 60}
-            onChange={(e) => setLongBreakDuration(Number(e.target.value) * 60)}
-            style={{ marginLeft: 4, width: 60 }}
+            onChange={(e) => {
+              const minutes = parseInt(e.target.value);
+              if (!isNaN(minutes) && minutes > 0) {
+                setLongBreak(minutes * 60);
+                if (isBreak && cycleCount >= 4) setTime(minutes * 60);
+                localStorage.setItem("longBreak", minutes * 60);
+              }
+            }}
           />
-        </label>
-
-        <button
-          onClick={() => {
-            localStorage.setItem("focusDuration", focusDuration);
-            localStorage.setItem("shortBreakDuration", shortBreakDuration);
-            localStorage.setItem("longBreakDuration", longBreakDuration);
-            alert("Időtartamok mentve!");
-          }}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 8,
-            border: "none",
-            background: "#0b7df0",
-            color: "white",
-            cursor: "pointer"
-          }}
-        >
-          Mentés
-        </button>
+        </div>
       </div>
 
       <div className="circle-wrapper">
