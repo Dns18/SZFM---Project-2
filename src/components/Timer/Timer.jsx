@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import "./Timer.css";
 
+const [focusDuration, setFocusDuration] = useState(() => {
+  return parseInt(localStorage.getItem("focusDuration")) || 25 * 60;
+});
+const [shortBreakDuration, setShortBreakDuration] = useState(() => {
+  return parseInt(localStorage.getItem("shortBreakDuration")) || 5 * 60;
+});
+const [longBreakDuration, setLongBreakDuration] = useState(() => {
+  return parseInt(localStorage.getItem("longBreakDuration")) || 15 * 60;
+});
+
 const FOCUS_DURATION = 25 * 60; // 25 perc
 const SHORT_BREAK_DURATION = 5 * 60; // 5 perc
 const LONG_BREAK_DURATION = 15 * 60; // 15 perc
@@ -263,6 +273,64 @@ if (isBreak) {
           Hozzáad
         </button>
       </div>
+
+      // ------------------------------------------------
+      // Egyéni időtartamok beállítása
+      <div className="custom-timers" style={{ marginBottom: 16 }}>
+        <label style={{ marginRight: 12 }}>
+          Fókusz perc:
+          <input
+            type="number"
+            min={1}
+            value={focusDuration / 60}
+            onChange={(e) => setFocusDuration(Number(e.target.value) * 60)}
+            style={{ marginLeft: 4, width: 60 }}
+          />
+        </label>
+
+        <label style={{ marginRight: 12 }}>
+          Rövid szünet perc:
+          <input
+            type="number"
+            min={1}
+            value={shortBreakDuration / 60}
+            onChange={(e) => setShortBreakDuration(Number(e.target.value) * 60)}
+            style={{ marginLeft: 4, width: 60 }}
+          />
+        </label>
+
+        <label style={{ marginRight: 12 }}>
+          Hosszú szünet perc:
+          <input
+            type="number"
+            min={1}
+            value={longBreakDuration / 60}
+            onChange={(e) => setLongBreakDuration(Number(e.target.value) * 60)}
+            style={{ marginLeft: 4, width: 60 }}
+          />
+        </label>
+
+        <button
+          onClick={() => {
+            localStorage.setItem("focusDuration", focusDuration);
+            localStorage.setItem("shortBreakDuration", shortBreakDuration);
+            localStorage.setItem("longBreakDuration", longBreakDuration);
+            alert("Időtartamok mentve!");
+          }}
+          style={{
+            padding: "6px 12px",
+            borderRadius: 8,
+            border: "none",
+            background: "#0b7df0",
+            color: "white",
+            cursor: "pointer"
+          }}
+        >
+          Mentés
+        </button>
+      </div>
+
+      //--------------------------------------------------------
 
       <div className="circle-wrapper">
         <svg className="progress-ring" width="260" height="260">
