@@ -12,7 +12,23 @@ export default function Navbar({ route, setRoute }) {
     { id: "courses", label: "Tanfolyamok" },
     { id: "analytics", label: "Elemzések" },
   ];
-  const [menuOpen, setMenuOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [loaded, setLoaded] = useState(false);
+
+    // Betöltéskor animáció indítása
+    React.useEffect(() => {
+      // Animáció csak akkor, amikor a hamburger ikon eltűnik (desktop nézet)
+      const handleResize = () => {
+        if (window.innerWidth > 800) {
+          setLoaded(true);
+        } else {
+          setLoaded(false);
+        }
+      };
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
   // Mobil menü nyitva/zárva állapot
 
   // Bezárja a mobil menüt, ha az ablakméret nagyobb lesz
@@ -28,7 +44,7 @@ export default function Navbar({ route, setRoute }) {
   }, [menuOpen]);
 
   return (
-  <header className="navbar"> {/* Fő navigációs sáv */}
+  <header className={`navbar${loaded ? " loaded" : ""}`}> {/* Fő navigációs sáv */}
       <div className="logo">FocusFlow</div>
   {/* Logó szöveg */}
       <nav className="nav-links">
