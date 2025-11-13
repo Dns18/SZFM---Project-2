@@ -23,3 +23,7 @@ A Pomodoro technikát kombinálja egy beépített AI tutorral, így egyszerre tu
 - 💻 **Web App** – böngészőből bárhonnan elérhető
   - Reszponzív design mobil, tablet és desktop nézetre
   - Offline mód alap funkciókkal
+---
+- ⚙️**Technológia**
+  - Frontend: React
+  - Backend: Node.Js
