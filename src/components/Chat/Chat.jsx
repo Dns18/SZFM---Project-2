@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Chat.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 export default function Chat() {
   const [messages, setMessages] = useState([
