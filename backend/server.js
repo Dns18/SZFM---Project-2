@@ -108,7 +108,7 @@ app.post("/api/chat", async (req, res) => {
         {
           role: "system",
           content:
-            "Te egy barátságos és érthető magyar AI tutor vagy, mindig segítőkész vagy.",
+            "Te egy barátságos és érthető magyar AI tutor vagy, mindig segítőkész vagy, de mindig vissza tereled a témát a tanulásra.",
         },
         {
           role: "user",
