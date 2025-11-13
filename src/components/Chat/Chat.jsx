@@ -47,7 +47,7 @@ export default function Chat() {
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Írj egy üzenetet..."
         />
-        <button onClick={handleSend}>Küldés</button>
+        <button className="send-btn" onClick={handleSend} ><FontAwesomeIcon icon={faPaperPlane} /></button>
       </div>
     </div>
   );
