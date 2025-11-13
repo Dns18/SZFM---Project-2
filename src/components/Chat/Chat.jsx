@@ -8,18 +8,50 @@ export default function Chat() {
     { sender: "ai", text: "Szia! Miben segíthetek ma?" },
   ]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const boxRef = useRef(null);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim() === "") return;
-    setMessages((prev) => [...prev, { sender: "user", text: input }]);
+
+    const userText = input;
     setInput("");
-    setTimeout(() => {
+
+    // user üzenet hozzáadása
+    setMessages((prev) => [...prev, { sender: "user", text: userText }]);
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:4000/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userText }),
+      });
+
+      const data = await res.json();
+
+      if (data.reply) {
+        setMessages((prev) => [
+          ...prev,
+          { sender: "ai", text: data.reply },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { sender: "ai", text: "Nem érkezett érvényes válasz a szervertől." },
+        ]);
+      }
+    } catch (err) {
+      console.error(err);
       setMessages((prev) => [
         ...prev,
-        { sender: "ai", text: "Érdekes! Nézzük meg együtt..." },
+        { sender: "ai", text: "⚠️ Hiba történt a szerverrel való kommunikáció közben." },
       ]);
-    }, 700);
+    }
+
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -38,17 +70,25 @@ export default function Chat() {
             {m.text}
           </div>
         ))}
+
+        {loading && (
+          <div className="chat-message ai">
+            Gondolkodom...
+          </div>
+        )}
       </div>
 
       <div className="chat-input-group">
-          <input
-            className="chat-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Kérdezz bármit..."
-          />
-        <button className="send-btn" onClick={handleSend} ><FontAwesomeIcon icon={faPaperPlane} /></button>
+        <input
+          className="chat-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          placeholder="Kérdezz bármit..."
+        />
+        <button className="send-btn" onClick={handleSend}>
+          <FontAwesomeIcon icon={faPaperPlane} />
+        </button>
       </div>
     </div>
   );
