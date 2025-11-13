@@ -41,12 +41,13 @@ export default function Chat() {
       </div>
 
       <div className="chat-input-group">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Írj egy üzenetet..."
-        />
+          <input
+            className="chat-input"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Kérdezz bármit..."
+          />
         <button className="send-btn" onClick={handleSend} ><FontAwesomeIcon icon={faPaperPlane} /></button>
       </div>
     </div>
