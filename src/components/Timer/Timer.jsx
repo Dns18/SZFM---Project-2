@@ -67,7 +67,6 @@ export default function Timer() {
   const [topics, setTopics] = useState(() => loadTopics());
   const [topic, setTopic] = useState(() => {
     const t = loadTopics();
-    // ha van korábban kiválasztott topic localStorage-ban, használjuk azt
     const persisted = localStorage.getItem("selectedTopic");
     return (persisted && persisted.trim()) || (t && t.length ? t[0] : "Matematika");
   });
@@ -211,6 +210,7 @@ export default function Timer() {
 
   // --- topic kezelő funkciók ---
   const handleAddTopic = () => {
+    if (isActive) return; // blokkoljuk ha fut a timer
     const trimmed = newTopic.trim();
     if (!trimmed) return;
 
@@ -232,6 +232,7 @@ export default function Timer() {
   };
 
   const handleRemoveTopic = (t) => {
+    if (isActive) return; // blokkoljuk ha fut a timer
     const confirmed = window.confirm(`Törlöd a témát: "${t}" ? (a korábbi sessionök megmaradnak)`);
     if (!confirmed) return;
     const updated = topics.filter((x) => x !== t);
@@ -258,7 +259,15 @@ export default function Timer() {
             setTopic(v);
             try { localStorage.setItem("selectedTopic", v); } catch (err) {}
           }}
-          style={{ padding: "6px 10px", borderRadius: 8, border: "none", background: "#0b1220", color: "white" }}
+          disabled={isActive}
+          style={{
+            padding: "6px 10px",
+            borderRadius: 8,
+            border: "none",
+            background: isActive ? "#222" : "#0b1220",
+            color: "white",
+            cursor: isActive ? "not-allowed" : "pointer"
+          }}
         >
           {topics.map((t) => (
             <option key={t} value={t}>
@@ -269,8 +278,16 @@ export default function Timer() {
 
         <button
           onClick={() => topic && handleRemoveTopic(topic)}
-          style={{ padding: "6px 8px", borderRadius: 8, background: "#7f1d1d", color: "white", border: "none" }}
-          title="Téma törlése"
+          disabled={isActive}
+          style={{
+            padding: "6px 8px",
+            borderRadius: 8,
+            background: isActive ? "#4b1212" : "#7f1d1d",
+            color: "white",
+            border: "none",
+            cursor: isActive ? "not-allowed" : "pointer"
+          }}
+          title={isActive ? "A timer fut — előbb állítsd meg a timert" : "Téma törlése"}
         >
           Töröl
         </button>
@@ -281,11 +298,28 @@ export default function Timer() {
           value={newTopic}
           onChange={(e) => setNewTopic(e.target.value)}
           placeholder="Új téma hozzáadása"
-          style={{ padding: "6px 8px", borderRadius: 8, border: "none", background: "#0b1220", color: "white", flex: 1 }}
+          disabled={isActive}
+          style={{
+            padding: "6px 8px",
+            borderRadius: 8,
+            border: "none",
+            background: isActive ? "#222" : "#0b1220",
+            color: "white",
+            flex: 1,
+            cursor: isActive ? "not-allowed" : "text"
+          }}
         />
         <button
           onClick={handleAddTopic}
-          style={{ padding: "6px 10px", borderRadius: 8, background: "#0b7df0", color: "white", border: "none" }}
+          disabled={isActive}
+          style={{
+            padding: "6px 10px",
+            borderRadius: 8,
+            background: isActive ? "#4b86b1" : "#0b7df0",
+            color: "white",
+            border: "none",
+            cursor: isActive ? "not-allowed" : "pointer"
+          }}
         >
           Hozzáad
         </button>
