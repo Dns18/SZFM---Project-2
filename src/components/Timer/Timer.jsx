@@ -1,3 +1,4 @@
+// src/components/Timer/Timer.jsx
 import { useState, useEffect, useRef } from "react";
 import "./Timer.css";
 
@@ -52,7 +53,6 @@ export default function Timer() {
     return !isNaN(stored) ? stored : DEFAULT_LONG_BREAK;
   });
 
-  // segédfüggvény az idő formázására a Ciklushoz
   const formatMinutesSeconds = (seconds) => {
     const m = Math.floor(seconds / 60).toString().padStart(2, "0");
     const s = (seconds % 60).toString().padStart(2, "0");
@@ -62,12 +62,14 @@ export default function Timer() {
   const [time, setTime] = useState(focusDuration);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
-  const [cycleCount, setCycleCount] = useState(0); // 0 means before first focus, increments after each focus completes (1..4)
+  const [cycleCount, setCycleCount] = useState(0);
 
   const [topics, setTopics] = useState(() => loadTopics());
   const [topic, setTopic] = useState(() => {
     const t = loadTopics();
-    return t && t.length ? t[0] : "Matematika";
+    // ha van korábban kiválasztott topic localStorage-ban, használjuk azt
+    const persisted = localStorage.getItem("selectedTopic");
+    return (persisted && persisted.trim()) || (t && t.length ? t[0] : "Matematika");
   });
   const [newTopic, setNewTopic] = useState("");
 
@@ -111,8 +113,6 @@ export default function Timer() {
   };
 
   const startTimer = () => {
-    // If we are after finishing a full 4-cycle + long break, user must manually start a new cycle:
-    // allow start if not active and (either in progress or at beginning)
     setIsActive(true);
     if (!isBreak && !sessionStartRef.current) sessionStartRef.current = Date.now();
     startInterval();
@@ -124,7 +124,6 @@ export default function Timer() {
   };
 
   const endTimer = () => {
-    // Save current focus session if ending while in focus
     if (!isBreak && sessionStartRef.current) {
       const elapsedSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
       saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : focusDuration);
@@ -141,7 +140,6 @@ export default function Timer() {
     if (!isActive) setTime(focusDuration);
   }, [focusDuration]);
 
-  // utolsó 5 mp csipogás
   useEffect(() => {
     if (time > 0 && time <= 5) {
       const freq = isBreak ? 600 : 1000;
@@ -149,7 +147,6 @@ export default function Timer() {
     }
   }, [time, isBreak]);
 
-  // váltás logika
   useEffect(() => {
     if (time !== 0) return;
 
@@ -157,9 +154,7 @@ export default function Timer() {
 
     clearInterval(intervalRef.current);
 
-    // If finishing a focus period -> increment cycleCount and choose break
     if (!isBreak) {
-      // save focus session
       if (sessionStartRef.current) {
         const elapsedSec = Math.round((Date.now() - sessionStartRef.current) / 1000);
         saveSessionToStorage(topic, elapsedSec > 0 ? elapsedSec : focusDuration);
@@ -170,15 +165,12 @@ export default function Timer() {
       setCycleCount(nextCycle);
 
       if (nextCycle >= 4) {
-        // after the 4th focus, go to LONG_BREAK and then stop after it finishes
         setIsBreak(true);
         setTime(longBreakDuration);
         setIsActive(true);
         startInterval();
-        // we intentionally do NOT reset cycleCount here; after long break ends we'll stop
         return;
       } else {
-        // go to short break
         setIsBreak(true);
         setTime(shortBreakDuration);
         setIsActive(true);
@@ -187,26 +179,22 @@ export default function Timer() {
       }
     }
 
-if (isBreak) {
-  if (cycleCount >= 4) {
-    // hosszú szünet véget ért -> leállunk, kézi indítás kell
-    setIsBreak(false);
-    setIsActive(false);
-    setTime(focusDuration);
-    setCycleCount(0);
-    return;
-  } else {
-    // rövid szünet véget ért -> folytatjuk a következő fókuszszakasszal
-    setIsBreak(false);
-    setTime(focusDuration);
-    sessionStartRef.current = Date.now();
-    setIsActive(true);
-    startInterval();
-    return;
-  }
-}
-
-
+    if (isBreak) {
+      if (cycleCount >= 4) {
+        setIsBreak(false);
+        setIsActive(false);
+        setTime(focusDuration);
+        setCycleCount(0);
+        return;
+      } else {
+        setIsBreak(false);
+        setTime(focusDuration);
+        sessionStartRef.current = Date.now();
+        setIsActive(true);
+        startInterval();
+        return;
+      }
+    }
   }, [time]);
 
   useEffect(() => {
@@ -225,15 +213,21 @@ if (isBreak) {
   const handleAddTopic = () => {
     const trimmed = newTopic.trim();
     if (!trimmed) return;
+
     if (topics.includes(trimmed)) {
       setNewTopic("");
       setTopic(trimmed);
+      try { localStorage.setItem("selectedTopic", trimmed); } catch (err) {}
       return;
     }
+
     const updated = [...topics, trimmed];
     setTopics(updated);
     saveTopics(updated);
+
     setTopic(trimmed);
+    try { localStorage.setItem("selectedTopic", trimmed); } catch (err) {}
+
     setNewTopic("");
   };
 
@@ -243,7 +237,11 @@ if (isBreak) {
     const updated = topics.filter((x) => x !== t);
     setTopics(updated);
     saveTopics(updated);
-    if (topic === t) setTopic(updated[0] || "");
+    if (topic === t) {
+      const newTopic = updated[0] || "";
+      setTopic(newTopic);
+      try { localStorage.setItem("selectedTopic", newTopic); } catch (err) {}
+    }
   };
 
   return (
@@ -255,7 +253,11 @@ if (isBreak) {
 
         <select
           value={topic}
-          onChange={(e) => setTopic(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value;
+            setTopic(v);
+            try { localStorage.setItem("selectedTopic", v); } catch (err) {}
+          }}
           style={{ padding: "6px 10px", borderRadius: 8, border: "none", background: "#0b1220", color: "white" }}
         >
           {topics.map((t) => (
@@ -313,14 +315,13 @@ if (isBreak) {
             type="number"
             min="1"
             value={shortBreakDuration / 60}
-            // Short Break input
             onChange={(e) => {
               const minutes = parseInt(e.target.value);
               if (!isNaN(minutes) && minutes > 0) {
                 setShortBreakDuration(minutes * 60);
                 localStorage.setItem("shortBreakDuration", minutes * 60);
                 if (isBreak && cycleCount < 4) {
-                  setTime(minutes * 60); // az aktuális rövid szünetet frissíti
+                  setTime(minutes * 60);
                 }
               }
             }}
@@ -333,14 +334,13 @@ if (isBreak) {
             type="number"
             min="1"
             value={longBreakDuration / 60}
-            // Long Break Input
             onChange={(e) => {
               const minutes = parseInt(e.target.value);
               if (!isNaN(minutes) && minutes > 0) {
                 setLongBreakDuration(minutes * 60);
                 localStorage.setItem("longBreakDuration", minutes * 60);
                 if (isBreak && cycleCount >= 4) {
-                  setTime(minutes * 60); // az aktuális hosszú szünetet frissíti
+                  setTime(minutes * 60);
                 }
               }
             }}
