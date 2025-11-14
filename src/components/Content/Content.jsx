@@ -107,14 +107,6 @@ export default function Content({ route }) {
         )}
 
         <div style={{ marginTop: 18, display: "flex", gap: 8 }}>
-          <button
-            onClick={() => {
-              setSessions(loadSessions());
-            }}
-            style={{ padding: "8px 12px", borderRadius: 8, background: "#111836", color: "white", border: "none" }}
-          >
-            Frissít
-          </button>
 
           <button
             onClick={() => {
